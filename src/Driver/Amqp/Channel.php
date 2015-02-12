@@ -59,18 +59,28 @@ class Channel implements Publisher, Consumer
 
     private function initChannel()
     {
-        $this->channel->set_return_listener(function () {
-            $this->logger->alert('Couldn\'t route message');
+        $this->channel->set_return_listener(function ($reply_code, $reply_text, $exchange, $routing_key, AMQPMessage $msg) {
+            $this->logger->alert('Couldn\'t route message', [
+                'msg' => $msg,
+                'reply_code' => $reply_code,
+                'reply_text' => $reply_text,
+                'exchange' => $exchange,
+                'routing_key' => $routing_key,
+            ]);
 
             throw new RoutingException();
         });
 
-        $this->channel->set_ack_handler(function ($msg) {
-            $this->logger->info('Message acked');
+        $this->channel->set_ack_handler(function (AMQPMessage $msg) {
+            $this->logger->info('Message acked', [
+                'msg' => $msg,
+            ]);
         });
 
-        $this->channel->set_nack_handler(function () {
-            $this->logger->alert('Message nacked');
+        $this->channel->set_nack_handler(function (AMQPMessage $msg) {
+            $this->logger->alert('Message nacked', [
+                'msg' => $msg,
+            ]);
         });
 
         $this->channel->confirm_select();
