@@ -65,7 +65,7 @@ class Channel implements Publisher, Consumer
             throw new RoutingException();
         });
 
-        $this->channel->set_ack_handler(function () {
+        $this->channel->set_ack_handler(function ($msg) {
             $this->logger->info('Message acked');
         });
 
@@ -83,8 +83,8 @@ class Channel implements Publisher, Consumer
         ]);
 
         $this->channel->basic_publish($msg, $this->exchangeName, $key, true);
-        $this->channel->wait_for_pending_acks();
         $this->channel->wait();
+        $this->channel->wait_for_pending_acks();
     }
 
     public function consume($queueName, $key, callable $callback)
@@ -100,6 +100,15 @@ class Channel implements Publisher, Consumer
     {
         while (count($this->channel->callbacks)) {
             $this->channel->wait();
+        }
+    }
+
+    public function waitN($n)
+    {
+        $i = 0;
+        while (count($this->channel->callbacks) && $i < $n) {
+            $this->channel->wait();
+            $i++;
         }
     }
 

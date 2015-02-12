@@ -39,6 +39,13 @@ You will work with 2 interfaces Publisher for publishing messages into queues an
    <?php
    namespace Imatic\Notification;
 
+   interface Connection
+   {
+      public function createPublisher(ChannelParams $params);
+   
+      public function createConsumer(ChannelParams $params);
+   }
+
    interface Publisher
    {
        public function publish(Message $message, $key = '');
@@ -47,6 +54,10 @@ You will work with 2 interfaces Publisher for publishing messages into queues an
    interface Consumer
    {
        public function consume($queueName, $key, callable $callback);
+       
+       public function wait();
+
+       public function waitN($n);
    }
 
 These 2 interfaces are implemented by service ``imatic_notification.connection``
@@ -107,8 +118,8 @@ And then you can access to the services from your Symfony container
    <?php
    $connection = $this->container->get('imatic_notification.connection');
 
-Usage examples
-==============
+Usage example
+=============
 
 .. sourcecode:: php
 
@@ -116,13 +127,15 @@ Usage examples
    // create connection to the broker
    $connection = $this->container->get('imatic_notification.connection');
 
-   // create channel
+   // create channel parameters
    $channelParams = new ChannelParams($exchange = 'imatic_queue_test');
-   $channel = $connection->createChannel($channelParams);
+
+   // create consumer
+   $consumer = $connection->createConsumer($channelParams);
 
    // listen to the messages on queue "queue_name"
    // to all messages having routing key "routing_key"
-   $channel->consume('queue_name', 'routing_key', function (Message $msg) {
+   $consumer->consume('queue_name', 'routing_key', function (Message $msg) {
        $this->logger->logData('data');
 
        // you need to return true to tell the broker that it can discard the messaga
@@ -130,11 +143,17 @@ Usage examples
        return true;
    });
 
-   // publish message to the channel with routing key "routing_key"
-   $channel->publish(new Message(['data' => 'bdy']), 'routing_key');
+   // create publisher
+   $publisher = $connection->createPublisher($channelParams);
 
-   // won't return till you have listening consumers active
-   $channel->wait();
+   // publish message to the channel with routing key "routing_key"
+   $publisher->publish(new Message(['data' => 'bdy']), 'routing_key');
+
+   // consume only 1 message, then continue
+   $consumer->waitN(1);
+
+   // won't return till you have listening consumers
+   $consumer->wait();
 
 .. _yml2pimple: https://github.com/gonzalo123/yml2pimple
 .. _`psr log`: https://github.com/php-fig/log/tree/master

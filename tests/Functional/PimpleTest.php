@@ -51,16 +51,19 @@ class PimpleTest extends PHPUnit_Framework_TestCase
         $connection = $this->pimple['imatic_notification.connection'];
 
         $channelParams = new ChannelParams('imatic_queue_test');
-        $channel = $connection->createChannel($channelParams);
 
+        $consumer = $connection->createConsumer($channelParams);
         $actual = '';
-        $channel->consume(static::QUEUE_NAME, 'pimple', function (Message $msg) use (&$actual) {
+        $consumer->consume(static::QUEUE_NAME, 'pimple', function (Message $msg) use (&$actual) {
             $actual = $msg->get('data');
 
             return true;
         });
 
-        $channel->publish(new Message(['data' => 'bdy']), 'pimple');
+        $publisher = $connection->createPublisher($channelParams);
+        $publisher->publish(new Message(['data' => 'bdy']), 'pimple');
+
+        $consumer->waitN(1);
 
         $this->assertEquals('bdy', $actual);
     }

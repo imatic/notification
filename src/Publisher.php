@@ -7,5 +7,9 @@ namespace Imatic\Notification;
  */
 interface Publisher
 {
+    /**
+     * @param Message $message
+     * @param string $key
+     */
     public function publish(Message $message, $key = '');
 }

@@ -45,16 +45,19 @@ class PubSubTest extends PHPUnit_Framework_TestCase
     public function testMessageShouldBePublishedAndReceived()
     {
         $channelParams = new ChannelParams('imatic_queue_test');
-        $channel = $this->connection->createChannel($channelParams);
+        $consumer = $this->connection->createConsumer($channelParams);
 
         $actual = '';
-        $channel->consume(static::QUEUE_NAME, '#', function (Message $msg) use (&$actual) {
+        $consumer->consume(static::QUEUE_NAME, '#', function (Message $msg) use (&$actual) {
             $actual = $msg->get('data');
 
             return true;
         });
 
-        $channel->publish(new Message(['data' => 'bdy']));
+        $publisher = $this->connection->createPublisher($channelParams);
+        $publisher->publish(new Message(['data' => 'bdy']));
+
+        $consumer->waitN(1);
 
         $this->assertEquals('bdy', $actual);
     }
@@ -65,8 +68,8 @@ class PubSubTest extends PHPUnit_Framework_TestCase
     public function testExceptionShouldBeCalledWhenMessageWasNotRouted()
     {
         $channelParams = new ChannelParams('imatic_queue_test');
-        $channel = $this->connection->createChannel($channelParams);
+        $publisher = $this->connection->createPublisher($channelParams);
 
-        $channel->publish(new Message(['data' => 'bdy']), 'unroutable-key');
+        $publisher->publish(new Message(['data' => 'bdy']), 'unroutable-key');
     }
 }

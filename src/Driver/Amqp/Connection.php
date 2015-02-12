@@ -3,14 +3,15 @@
 namespace Imatic\Notification\Driver\Amqp;
 
 use Imatic\Notification\ChannelParams;
+use Imatic\Notification\Connection as ConnectionInterface;
 use Imatic\Notification\ConnectionParams;
-use PhpAmqpLib\Connection\AMQPConnection;
 use Imatic\Notification\Driver\Amqp\ChannelFactory;
+use PhpAmqpLib\Connection\AMQPConnection;
 
 /**
  * @author Miloslav Nenadal <miloslav.nenadal@imatic.cz>
  */
-class Connection
+class Connection implements ConnectionInterface
 {
     /**
      * @var AMQPConnection
@@ -35,7 +36,17 @@ class Connection
         $this->channelFactory = $channelFactory;
     }
 
-    public function createChannel(ChannelParams $params)
+    public function createConsumer(ChannelParams $params)
+    {
+        return $this->createChannel($params);
+    }
+
+    public function createPublisher(ChannelParams $params)
+    {
+        return $this->createChannel($params);
+    }
+
+    private function createChannel(ChannelParams $params)
     {
         $channel = $this->connection->channel();
         $channel->exchange_declare($params->getExchange(), 'topic', false, true, false);
