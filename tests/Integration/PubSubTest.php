@@ -1,0 +1,72 @@
+<?php
+
+namespace Imatic\Notification\Test\Integration;
+
+use Imatic\Notification\ChannelParams;
+use Imatic\Notification\ConnectionParams;
+use Imatic\Notification\Driver\Amqp\Connection;
+use Imatic\Notification\Driver\Amqp\ConsumerCallbackFactory;
+use Imatic\Notification\Exception\RoutingException;
+use Imatic\Notification\Message;
+use Imatic\Notification\MessageSerializer;
+use Imatic\Notification\Test\Mock\Driver\Amqp\ChannelFactory;
+use PHPUnit_Framework_TestCase;
+use Psr\Log\NullLogger;
+
+/**
+ * @author Miloslav Nenadal <miloslav.nenadal@imatic.cz>
+ */
+class PubSubTest extends PHPUnit_Framework_TestCase
+{
+    const QUEUE_NAME = 'test-queue';
+
+    private $connection;
+    private $channelFactory;
+
+    protected function setUp()
+    {
+        $this->channelFactory = new ChannelFactory(
+            new ConsumerCallbackFactory(new MessageSerializer()),
+            new MessageSerializer(),
+            new NullLogger()
+        );
+
+        $connectionParams = new ConnectionParams();
+        $this->connection = new Connection($connectionParams, $this->channelFactory);
+    }
+
+    protected function tearDown()
+    {
+        if ($channel = $this->channelFactory->lastChannel) {
+            $channel->queue_delete(static::QUEUE_NAME);
+        }
+    }
+
+    public function testMessageShouldBePublishedAndReceived()
+    {
+        $channelParams = new ChannelParams('imatic_queue_test');
+        $channel = $this->connection->createChannel($channelParams);
+
+        $actual = '';
+        $channel->consume(static::QUEUE_NAME, '#', function (Message $msg) use (&$actual) {
+            $actual = $msg->get('data');
+
+            return true;
+        });
+
+        $channel->publish(new Message(['data' => 'bdy']));
+
+        $this->assertEquals('bdy', $actual);
+    }
+
+    /**
+     * @expectedException Imatic\Notification\Exception\RoutingException
+     */
+    public function testExceptionShouldBeCalledWhenMessageWasNotRouted()
+    {
+        $channelParams = new ChannelParams('imatic_queue_test');
+        $channel = $this->connection->createChannel($channelParams);
+
+        $channel->publish(new Message(['data' => 'bdy']), 'unroutable-key');
+    }
+}

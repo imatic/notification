@@ -1,0 +1,27 @@
+parameters:
+    imatic_notification.dumm_param: dumm_value
+
+services:
+    imatic_notification.connection_params:
+        class: Imatic\Notification\ConnectionParams
+        arguments:
+            - %imatic_notification_params%
+        public: false
+
+    imatic_notification.message_serializer:
+        class: Imatic\Notification\MessageSerializer
+        public: false
+
+    imatic_notification.consumer_callback_factory:
+        class: Imatic\Notification\Driver\Amqp\ConsumerCallbackFactory
+        arguments:
+            - @imatic_notification.message_serializer
+        public: false
+
+    imatic_notification.channel_factory:
+        class: Imatic\Notification\Driver\Amqp\ChannelFactory
+        arguments:
+            - @imatic_notification.consumer_callback_factory
+            - @imatic_notification.message_serializer
+            - @imatic_notification.logger
+        public: false

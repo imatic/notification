@@ -1,0 +1,7 @@
+services:
+    imatic_notification.channel_factory:
+        class: Imatic\Notification\Test\Mock\Driver\Amqp\ChannelFactory
+        arguments:
+            - @imatic_notification.consumer_callback_factory
+            - @imatic_notification.message_serializer
+            - @imatic_notification.logger
