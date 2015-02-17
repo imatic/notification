@@ -1,4 +1,10 @@
 {
+    "name": "imatic/notification",
+    "type": "library",
+    "description": "Imatic Notification",
+    "keywords": [],
+    "homepage": "http://imatic.cz",
+    "license": "proprietary",
     "require": {
         "videlalvaro/php-amqplib": "~2.4",
         "symfony/options-resolver": "~2.4",
