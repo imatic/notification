@@ -102,7 +102,7 @@ To load services for Symfony, you need to edit your your app/config/config.yml
 .. sourcecode:: yaml
 
    imports:
-       - { resource: %kernel.root_dir%/../vendor/imatic/notification/config/services.yml }
+       - { resource: ../../vendor/imatic/notification/config/services.yml }
 
    parameters:
        imatic_notification_params: []
