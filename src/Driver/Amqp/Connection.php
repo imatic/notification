@@ -25,12 +25,17 @@ class Connection implements ConnectionInterface
 
     public function __construct(ConnectionParams $params, ChannelFactory $channelFactory)
     {
+        $vhost = '/';
+        if ($params->getNamespace()) {
+            $vhost = sprintf('%s', $params->getNamespace());
+        }
+
         $this->connection = new AMQPConnection(
             $params->getHost(),
             $params->getPort(),
             $params->getUser(),
             $params->getPassword(),
-            sprintf('/%s', $params->getNamespace())
+            $vhost
         );
 
         $this->channelFactory = $channelFactory;
