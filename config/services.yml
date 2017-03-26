@@ -5,5 +5,5 @@ services:
     imatic_notification.connection:
         class: Imatic\Notification\Driver\Amqp\Connection
         arguments:
-            - @imatic_notification.connection_params
-            - @imatic_notification.channel_factory
+            - "@imatic_notification.connection_params"
+            - "@imatic_notification.channel_factory"
