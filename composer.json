@@ -6,12 +6,12 @@
     "homepage": "http://imatic.cz",
     "license": "proprietary",
     "require": {
-        "videlalvaro/php-amqplib": "~2.4",
-        "symfony/options-resolver": "~2.4",
+        "php-amqplib/php-amqplib": "~2.4",
+        "symfony/options-resolver": "~2.4 | ~3.0",
         "psr/log": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.5",
+        "phpunit/phpunit": "~5.0",
         "gonzalo123/yaml2pimple": "*"
     },
     "suggest": {
