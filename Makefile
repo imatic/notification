@@ -31,6 +31,6 @@ update-test: | composer
 .PHONY: configure-pipelines
 configure-pipelines:
 	apt-get update
-	apt-get install --yes git
+	apt-get install --yes git graphviz
 	docker-php-ext-install bcmath
 
