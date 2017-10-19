@@ -1,5 +1,4 @@
 <?php
-
 namespace Imatic\Notification\Exception;
 
 use Exception;
@@ -9,5 +8,4 @@ use Exception;
  */
 class RoutingException extends Exception
 {
-
 }

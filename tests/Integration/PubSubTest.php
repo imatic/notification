@@ -1,12 +1,10 @@
 <?php
-
 namespace Imatic\Notification\Test\Integration;
 
 use Imatic\Notification\ChannelParams;
 use Imatic\Notification\ConnectionParams;
 use Imatic\Notification\Driver\Amqp\Connection;
 use Imatic\Notification\Driver\Amqp\ConsumerCallbackFactory;
-use Imatic\Notification\Exception\RoutingException;
 use Imatic\Notification\Message;
 use Imatic\Notification\MessageSerializer;
 use Imatic\Notification\Test\Mock\Driver\Amqp\ChannelFactory;
@@ -76,7 +74,7 @@ class PubSubTest extends PHPUnit_Framework_TestCase
                 $publisher->publish(new Message(['data' => 'bdy2']));
 
                 $actual .= '__cleanUp__';
-            }
+            },
         ]);
         $consumer = $this->connection->createConsumer($channelParams);
 
@@ -108,7 +106,7 @@ class PubSubTest extends PHPUnit_Framework_TestCase
                 $publisher->publish(new Message(['data' => 'bdy3']));
 
                 $actual .= '__cleanUp__';
-            }
+            },
         ]);
         $consumer = $this->connection->createConsumer($channelParams);
 
@@ -128,7 +126,7 @@ class PubSubTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Imatic\Notification\Exception\RoutingException
+     * @expectedException \Imatic\Notification\Exception\RoutingException
      */
     public function testExceptionShouldBeCalledWhenMessageWasNotRouted()
     {

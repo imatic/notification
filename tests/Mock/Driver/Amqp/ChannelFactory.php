@@ -1,5 +1,4 @@
 <?php
-
 namespace Imatic\Notification\Test\Mock\Driver\Amqp;
 
 use Imatic\Notification\ChannelParams;

@@ -1,5 +1,4 @@
 <?php
-
 namespace Imatic\Notification\Test\Unit;
 
 use Imatic\Notification\ConnectionParams;
@@ -49,7 +48,7 @@ class ConnectionParamsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testUnknownOptionShouldThrowException()
     {

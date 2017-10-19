@@ -1,5 +1,4 @@
 <?php
-
 namespace Imatic\Notification;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -29,8 +28,10 @@ class ChannelParams
         $this->options = (new OptionsResolver())
             ->setDefaults([
                 'timeout' => 0,
-                'init' => function () {},
-                'cleanUp' => function() {},
+                'init' => function () {
+                },
+                'cleanUp' => function () {
+                },
             ])
             ->setAllowedTypes('timeout', 'int')
             ->setAllowedTypes('init', 'callable')

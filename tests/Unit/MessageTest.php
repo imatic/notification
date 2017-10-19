@@ -1,5 +1,4 @@
 <?php
-
 namespace Imatic\Notification\Test\Unit;
 
 use Imatic\Notification\Message;
@@ -20,7 +19,7 @@ class MessageTest extends PHPUnit_Framework_TestCase
                     'city' => 'Prague',
                     'zip' => 23583,
                 ],
-            ]
+            ],
         ]);
 
         $this->assertTrue($message->has('person'));

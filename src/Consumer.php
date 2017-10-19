@@ -1,5 +1,4 @@
 <?php
-
 namespace Imatic\Notification;
 
 /**
@@ -10,7 +9,6 @@ interface Consumer
     /**
      * @param string $queueName
      * @param string $key
-     *
      * @param callable $callback
      */
     public function consume($queueName, $key, callable $callback);

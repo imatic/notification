@@ -1,9 +1,7 @@
 <?php
-
 namespace Imatic\Notification\Driver\Amqp;
 
 use Imatic\Notification\Consumer;
-use Imatic\Notification\Driver\Amqp\ConsumerCallbackFactory;
 use Imatic\Notification\Exception\RoutingException;
 use Imatic\Notification\Message;
 use Imatic\Notification\MessageSerializer;
@@ -55,23 +53,25 @@ class Channel implements Publisher, Consumer
 
     public function __construct(
         ConsumerCallbackFactory $consumerCallbackFactory,
-        MessageSerializer $MessageSerializer,
+        MessageSerializer $messageSerializer,
         LoggerInterface $logger,
         AMQPChannel $channel,
         $exchangeName,
         $options = []
     ) {
         $this->consumerCallbackFactory = $consumerCallbackFactory;
-        $this->MessageSerializer = $MessageSerializer;
+        $this->MessageSerializer = $messageSerializer;
         $this->logger = $logger;
         $this->channel = $channel;
         $this->exchangeName = $exchangeName;
         $this->initChannel();
-        $this->options = array_merge(
+        $this->options = \array_merge(
             [
                 'timeout' => 0,
-                'init' => function () {},
-                'cleanUp' => function() {},
+                'init' => function () {
+                },
+                'cleanUp' => function () {
+                },
             ],
             $options
         );
@@ -79,13 +79,13 @@ class Channel implements Publisher, Consumer
 
     private function initChannel()
     {
-        $this->channel->set_return_listener(function ($reply_code, $reply_text, $exchange, $routing_key, AMQPMessage $msg) {
+        $this->channel->set_return_listener(function ($replyCode, $replyText, $exchange, $routingKey, AMQPMessage $msg) {
             $this->logger->alert('Couldn\'t route message', [
                 'msg' => $msg,
-                'reply_code' => $reply_code,
-                'reply_text' => $reply_text,
+                'reply_code' => $replyCode,
+                'reply_text' => $replyText,
                 'exchange' => $exchange,
-                'routing_key' => $routing_key,
+                'routing_key' => $routingKey,
             ]);
 
             throw new RoutingException();
@@ -121,11 +121,11 @@ class Channel implements Publisher, Consumer
     {
         $wrappedCallback = function () use ($callback) {
             if (!$this->consumed) {
-                call_user_func($this->options['init']);
+                \call_user_func($this->options['init']);
                 $this->consumed = true;
             }
 
-            return call_user_func_array($callback, func_get_args());
+            return \call_user_func_array($callback, \func_get_args());
         };
 
         $cb = $this->consumerCallbackFactory->create($wrappedCallback);
@@ -137,12 +137,12 @@ class Channel implements Publisher, Consumer
 
     public function wait()
     {
-        while (count($this->channel->callbacks)) {
+        while (\count($this->channel->callbacks)) {
             $this->wait1();
         }
 
         if ($this->consumed) {
-            call_user_func($this->options['cleanUp']);
+            \call_user_func($this->options['cleanUp']);
             $this->consumed = false;
         }
     }
@@ -150,13 +150,13 @@ class Channel implements Publisher, Consumer
     public function waitN($n)
     {
         $i = 0;
-        while (count($this->channel->callbacks) && $i < $n) {
+        while (\count($this->channel->callbacks) && $i < $n) {
             $this->wait1();
             $i++;
         }
 
         if ($this->consumed) {
-            call_user_func($this->options['cleanUp']);
+            \call_user_func($this->options['cleanUp']);
             $this->consumed = false;
         }
     }
@@ -173,7 +173,7 @@ class Channel implements Publisher, Consumer
             $this->channel->wait(null, false, $this->options['timeout']);
         } catch (AMQPTimeoutException $e) {
             if ($this->consumed) {
-                call_user_func($this->options['cleanUp']);
+                \call_user_func($this->options['cleanUp']);
                 $this->consumed = false;
             }
 
