@@ -1,5 +1,4 @@
 <?php
-
 namespace Imatic\Notification;
 
 /**
@@ -30,10 +29,10 @@ class Message
 
     public function getIn($path, $default = null)
     {
-        $keys = explode('.', $path);
+        $keys = \explode('.', $path);
         $result = $this->data;
         foreach ($keys as $key) {
-            if (!array_key_exists($key, $result)) {
+            if (!\array_key_exists($key, $result)) {
                 return $default;
             }
 
@@ -45,15 +44,15 @@ class Message
 
     public function has($key)
     {
-        return array_key_exists($key, $this->data);
+        return \array_key_exists($key, $this->data);
     }
 
     public function hasIn($path)
     {
-        $keys = explode('.', $path);
+        $keys = \explode('.', $path);
         $result = $this->data;
         foreach ($keys as $key) {
-            if (!array_key_exists($key, $result)) {
+            if (!\array_key_exists($key, $result)) {
                 return false;
             }
 

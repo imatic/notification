@@ -1,5 +1,4 @@
 <?php
-
 namespace Imatic\Notification\Test\Functional;
 
 use G\Yaml2Pimple\ContainerBuilder;

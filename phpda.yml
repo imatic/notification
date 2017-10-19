@@ -1,0 +1,7 @@
+mode: usage
+target: phpda.svg
+formatter: PhpDA\Writer\Strategy\Svg
+source: './'
+ignore:
+    - 'vendor'
+

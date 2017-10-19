@@ -1,9 +1,8 @@
 <?php
-
 namespace Imatic\Notification\Driver\Amqp;
 
-use Imatic\Notification\MessageSerializer;
 use Imatic\Notification\Message;
+use Imatic\Notification\MessageSerializer;
 use PhpAmqpLib\Message\AMQPMessage;
 
 /**
@@ -14,15 +13,15 @@ class ConsumerCallback
     private $callback;
     private $MessageSerializer;
 
-    public function __construct(callable $callback, MessageSerializer $MessageSerializer)
+    public function __construct(callable $callback, MessageSerializer $messageSerializer)
     {
         $this->callback = $callback;
-        $this->MessageSerializer = $MessageSerializer;
+        $this->MessageSerializer = $messageSerializer;
     }
 
     public function __invoke(AMQPMessage $msg)
     {
-        $result = call_user_func($this->callback, new Message($this->MessageSerializer->deserialize($msg->body)));
+        $result = \call_user_func($this->callback, new Message($this->MessageSerializer->deserialize($msg->body)));
         if ($result === true) {
             $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
         } else {

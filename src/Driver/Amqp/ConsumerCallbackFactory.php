@@ -1,5 +1,4 @@
 <?php
-
 namespace Imatic\Notification\Driver\Amqp;
 
 use Imatic\Notification\MessageSerializer;
@@ -11,9 +10,9 @@ class ConsumerCallbackFactory
 {
     private $MessageSerializer;
 
-    public function __construct(MessageSerializer $MessageSerializer)
+    public function __construct(MessageSerializer $messageSerializer)
     {
-        $this->MessageSerializer = $MessageSerializer;
+        $this->MessageSerializer = $messageSerializer;
     }
 
     public function create(callable $callback)

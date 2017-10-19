@@ -1,5 +1,4 @@
 <?php
-
 namespace Imatic\Notification\Driver\Amqp;
 
 use Imatic\Notification\ChannelParams;
@@ -29,16 +28,23 @@ class ChannelFactory
 
     public function __construct(
         ConsumerCallbackFactory $consumerCallbackFactory,
-        MessageSerializer $MessageSerializer,
+        MessageSerializer $messageSerializer,
         LoggerInterface $logger
     ) {
         $this->consumerCallbackFactory = $consumerCallbackFactory;
-        $this->MessageSerializer = $MessageSerializer;
+        $this->MessageSerializer = $messageSerializer;
         $this->logger = $logger;
     }
 
     public function create(ChannelParams $params, AMQPChannel $channel)
     {
-        return new Channel($this->consumerCallbackFactory, $this->MessageSerializer, $this->logger, $channel, $params->getExchange());
+        return new Channel(
+            $this->consumerCallbackFactory,
+            $this->MessageSerializer,
+            $this->logger,
+            $channel,
+            $params->getExchange(),
+            $params->getOptions()
+        );
     }
 }

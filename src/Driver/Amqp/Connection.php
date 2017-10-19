@@ -1,11 +1,9 @@
 <?php
-
 namespace Imatic\Notification\Driver\Amqp;
 
 use Imatic\Notification\ChannelParams;
 use Imatic\Notification\Connection as ConnectionInterface;
 use Imatic\Notification\ConnectionParams;
-use Imatic\Notification\Driver\Amqp\ChannelFactory;
 use PhpAmqpLib\Connection\AMQPConnection;
 
 /**
@@ -27,7 +25,7 @@ class Connection implements ConnectionInterface
     {
         $vhost = '/';
         if ($params->getNamespace()) {
-            $vhost = sprintf('%s', $params->getNamespace());
+            $vhost = \sprintf('%s', $params->getNamespace());
         }
 
         $this->connection = new AMQPConnection(
