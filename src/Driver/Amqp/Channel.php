@@ -9,6 +9,7 @@ use Imatic\Notification\Message;
 use Imatic\Notification\MessageSerializer;
 use Imatic\Notification\Publisher;
 use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Exception\AMQPTimeoutException;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Log\LoggerInterface;
 
@@ -42,12 +43,23 @@ class Channel implements Publisher, Consumer
      */
     private $logger;
 
+    /**
+     * @var array
+     */
+    private $options;
+
+    /**
+     * True if at least one message was consumed during waiting.
+     */
+    private $consumed = false;
+
     public function __construct(
         ConsumerCallbackFactory $consumerCallbackFactory,
         MessageSerializer $MessageSerializer,
         LoggerInterface $logger,
         AMQPChannel $channel,
-        $exchangeName
+        $exchangeName,
+        $options = []
     ) {
         $this->consumerCallbackFactory = $consumerCallbackFactory;
         $this->MessageSerializer = $MessageSerializer;
@@ -55,6 +67,14 @@ class Channel implements Publisher, Consumer
         $this->channel = $channel;
         $this->exchangeName = $exchangeName;
         $this->initChannel();
+        $this->options = array_merge(
+            [
+                'timeout' => 0,
+                'init' => function () {},
+                'cleanUp' => function() {},
+            ],
+            $options
+        );
     }
 
     private function initChannel()
@@ -99,7 +119,16 @@ class Channel implements Publisher, Consumer
 
     public function consume($queueName, $key, callable $callback)
     {
-        $cb = $this->consumerCallbackFactory->create($callback);
+        $wrappedCallback = function () use ($callback) {
+            if (!$this->consumed) {
+                call_user_func($this->options['init']);
+                $this->consumed = true;
+            }
+
+            return call_user_func_array($callback, func_get_args());
+        };
+
+        $cb = $this->consumerCallbackFactory->create($wrappedCallback);
 
         $this->channel->queue_declare($queueName, false, true, false, false);
         $this->channel->queue_bind($queueName, $this->exchangeName, $key);
@@ -109,7 +138,12 @@ class Channel implements Publisher, Consumer
     public function wait()
     {
         while (count($this->channel->callbacks)) {
-            $this->channel->wait();
+            $this->wait1();
+        }
+
+        if ($this->consumed) {
+            call_user_func($this->options['cleanUp']);
+            $this->consumed = false;
         }
     }
 
@@ -117,8 +151,33 @@ class Channel implements Publisher, Consumer
     {
         $i = 0;
         while (count($this->channel->callbacks) && $i < $n) {
-            $this->channel->wait();
+            $this->wait1();
             $i++;
+        }
+
+        if ($this->consumed) {
+            call_user_func($this->options['cleanUp']);
+            $this->consumed = false;
+        }
+    }
+
+    /**
+     * Blocks until 1 message is received.
+     *
+     * If no message is received within configured timeout, it calls cleanUp function and then blocks until message is received.
+     * If first message or first message after cleanUp is received, it calls init function.
+     */
+    private function wait1()
+    {
+        try {
+            $this->channel->wait(null, false, $this->options['timeout']);
+        } catch (AMQPTimeoutException $e) {
+            if ($this->consumed) {
+                call_user_func($this->options['cleanUp']);
+                $this->consumed = false;
+            }
+
+            $this->channel->wait(null, false, 0);
         }
     }
 

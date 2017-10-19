@@ -39,6 +39,13 @@ class ChannelFactory
 
     public function create(ChannelParams $params, AMQPChannel $channel)
     {
-        return new Channel($this->consumerCallbackFactory, $this->MessageSerializer, $this->logger, $channel, $params->getExchange());
+        return new Channel(
+            $this->consumerCallbackFactory,
+            $this->MessageSerializer,
+            $this->logger,
+            $channel,
+            $params->getExchange(),
+            $params->getOptions()
+        );
     }
 }
