@@ -1,7 +1,7 @@
 {
     "name": "imatic/notification",
     "type": "library",
-    "description": "Imatic Notification",
+    "description": "Simple library for sending reliable messages among apps",
     "keywords": [],
     "homepage": "http://imatic.cz",
     "license": "MIT",

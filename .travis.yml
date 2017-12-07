@@ -1,0 +1,20 @@
+sudo: required
+
+language: php
+
+php: 7.1
+
+addons:
+    apt:
+        packages:
+            - graphviz
+
+services:
+    - rabbitmq
+
+before_script:
+    - phpenv config-rm xdebug.ini
+    - composer install
+
+script:
+    - make test
