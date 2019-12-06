@@ -2,12 +2,13 @@ sudo: required
 
 language: php
 
-php: 7.1
+php: 7.4
 
 addons:
     apt:
         packages:
             - graphviz
+            - rabbitmq-server
 
 services:
     - rabbitmq
