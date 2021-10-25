@@ -1,5 +1,5 @@
 .PHONY: test
-test: phpunit phpmd phpcs phpda
+test: phpunit phpmd phpcs
 
 .PHONY: phpunit
 phpunit:
@@ -12,10 +12,6 @@ phpmd:
 .PHONY: phpcs
 phpcs:
 	./vendor/bin/php-cs-fixer fix --dry-run
-
-.PHONY: phpda
-phpda:
-	./vendor/bin/phpda analyze phpda.yml
 
 composer:
 ifeq ($(shell which composer 2> /dev/null),)

@@ -5,23 +5,24 @@ use Imatic\Notification\ChannelParams;
 use Imatic\Notification\ConnectionParams;
 use Imatic\Notification\Driver\Amqp\Connection;
 use Imatic\Notification\Driver\Amqp\ConsumerCallbackFactory;
+use Imatic\Notification\Exception\RoutingException;
 use Imatic\Notification\Message;
 use Imatic\Notification\MessageSerializer;
 use Imatic\Notification\Test\Mock\Driver\Amqp\ChannelFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
 /**
  * @author Miloslav Nenadal <miloslav.nenadal@imatic.cz>
  */
-class PubSubTest extends PHPUnit_Framework_TestCase
+class PubSubTest extends TestCase
 {
     const QUEUE_NAME = 'test-queue';
 
     private $connection;
     private $channelFactory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->channelFactory = new ChannelFactory(
             new ConsumerCallbackFactory(new MessageSerializer()),
@@ -33,7 +34,7 @@ class PubSubTest extends PHPUnit_Framework_TestCase
         $this->connection = new Connection($connectionParams, $this->channelFactory);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if ($channel = $this->channelFactory->lastChannel) {
             $channel->queue_delete(static::QUEUE_NAME);
@@ -125,11 +126,10 @@ class PubSubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('__init__bdy1bdy2__cleanUp____init__bdy3__cleanUp__', $actual);
     }
 
-    /**
-     * @expectedException \Imatic\Notification\Exception\RoutingException
-     */
     public function testExceptionShouldBeCalledWhenMessageWasNotRouted()
     {
+        $this->expectException(RoutingException::class);
+
         $channelParams = new ChannelParams('imatic_queue_test');
         $publisher = $this->connection->createPublisher($channelParams);
 

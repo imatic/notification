@@ -5,7 +5,7 @@ use G\Yaml2Pimple\ContainerBuilder;
 use G\Yaml2Pimple\YamlFileLoader;
 use Imatic\Notification\ChannelParams;
 use Imatic\Notification\Message;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Psr\Log\NullLogger;
 use Symfony\Component\Config\FileLocator;
@@ -13,13 +13,13 @@ use Symfony\Component\Config\FileLocator;
 /**
  * @author Miloslav Nenadal <miloslav.nenadal@imatic.cz>
  */
-class PimpleTest extends PHPUnit_Framework_TestCase
+class PimpleTest extends TestCase
 {
     const QUEUE_NAME = 'test-queue';
 
     private $pimple;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $pimple = new Container([
             'imatic_notification_params' => [],
@@ -37,7 +37,7 @@ class PimpleTest extends PHPUnit_Framework_TestCase
         $this->pimple = $pimple;
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $channelFactory = $this->pimple['imatic_notification.channel_factory'];
         if ($channel = $channelFactory->lastChannel) {

@@ -4,7 +4,7 @@ namespace Imatic\Notification\Driver\Amqp;
 use Imatic\Notification\ChannelParams;
 use Imatic\Notification\Connection as ConnectionInterface;
 use Imatic\Notification\ConnectionParams;
-use PhpAmqpLib\Connection\AMQPConnection;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 /**
  * @author Miloslav Nenadal <miloslav.nenadal@imatic.cz>
@@ -12,7 +12,7 @@ use PhpAmqpLib\Connection\AMQPConnection;
 class Connection implements ConnectionInterface
 {
     /**
-     * @var AMQPConnection
+     * @var AMQPStreamConnection
      */
     private $connection;
 
@@ -28,7 +28,7 @@ class Connection implements ConnectionInterface
             $vhost = \sprintf('%s', $params->getNamespace());
         }
 
-        $this->connection = new AMQPConnection(
+        $this->connection = new AMQPStreamConnection(
             $params->getHost(),
             $params->getPort(),
             $params->getUser(),
