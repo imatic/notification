@@ -2,11 +2,12 @@
 namespace Imatic\Notification\Test\Unit;
 
 use Imatic\Notification\ConnectionParams;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Miloslav Nenadal <miloslav.nenadal@imatic.cz>
  */
-class ConnectionParamsTest extends \PHPUnit_Framework_TestCase
+class ConnectionParamsTest extends TestCase
 {
     public function testDefaultParametersShouldBeSet()
     {
@@ -47,11 +48,10 @@ class ConnectionParamsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('secret', $connectionParams->getPassword());
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testUnknownOptionShouldThrowException()
     {
+        $this->expectException(\Exception::class);
+
         $params = [
             'unknown-option' => 'value',
         ];

@@ -1,4 +1,3 @@
 /vendor/
 /composer
-/.php_cs.cache
-/phpda.svg
+/.php-cs-fixer.cache

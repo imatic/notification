@@ -2,12 +2,12 @@
 namespace Imatic\Notification\Test\Unit;
 
 use Imatic\Notification\Message;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Miloslav Nenadal <miloslav.nenadal@imatic.cz>
  */
-class MessageTest extends PHPUnit_Framework_TestCase
+class MessageTest extends TestCase
 {
     public function test()
     {

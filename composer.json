@@ -6,16 +6,15 @@
     "homepage": "http://imatic.cz",
     "license": "MIT",
     "require": {
-        "php-amqplib/php-amqplib": "~2.4",
+        "php-amqplib/php-amqplib": "^3.1.0",
         "symfony/options-resolver": "^2.4 || ^3.0 || ^4.0 || ^5.0",
         "psr/log": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "~5.0",
+        "phpunit/phpunit": "^9.5.10",
         "gonzalo123/yaml2pimple": "*",
         "phpmd/phpmd": "^2.6",
-        "friendsofphp/php-cs-fixer": "^2.7",
-        "mamuz/php-dependency-analysis": "^1.3"
+        "friendsofphp/php-cs-fixer": "^3.2.1"
     },
     "suggest": {
         "gonzalo123/yaml2pimple": "Create connection object for you",
