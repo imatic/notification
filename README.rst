@@ -77,31 +77,6 @@ Accessing to the services
 
 It is advised to use one container to create connection object for you from definition file "config/services.yml". Below you can see 2 of many possible ways to go.
 
-Using Pimple
-------------
-
-To load services for pimple, you need to add yml2pimple_ dependency into your composer.json
-
-.. sourcecode:: php
-
-   <?php
-   // create instance of container with required parameters
-   $pimple = new Container([
-       'imatic_notification_params' => [],
-       'imatic_notification.logger' => new NullLogger(),
-   ]);
-
-   // load services using yaml2pimple
-   $builder = new ContainerBuilder($pimple);
-   $locator = new FileLocator([
-       __DIR__ . '/../vendor/imatic/notification/config',
-   ]);
-   $loader = new YamlFileLoader($builder, $locator);
-   $loader->load('services.yml');
-
-   // then you can access to the services
-   $connection = $pimple['imatic_notification.connection'];
-
 Using Symfony
 -------------
 
@@ -163,6 +138,5 @@ Usage example
    // won't return till you have listening consumers
    $consumer->wait();
 
-.. _yml2pimple: https://github.com/gonzalo123/yml2pimple
 .. _`psr log`: https://github.com/php-fig/log/tree/master
 

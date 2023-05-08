@@ -12,12 +12,10 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5.10",
-        "gonzalo123/yaml2pimple": "*",
         "phpmd/phpmd": "^2.6",
         "friendsofphp/php-cs-fixer": "^3.2.1"
     },
     "suggest": {
-        "gonzalo123/yaml2pimple": "Create connection object for you",
         "symfony/symfony": "Great framework with container able to create connection object for you"
     },
     "autoload": {

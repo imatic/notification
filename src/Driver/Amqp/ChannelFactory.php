@@ -19,7 +19,7 @@ class ChannelFactory
     /**
      * @var MessageSerializer
      */
-    private $MessageSerializer;
+    private $messageSerializer;
 
     /**
      * @var LoggerInterface
@@ -32,7 +32,7 @@ class ChannelFactory
         LoggerInterface $logger
     ) {
         $this->consumerCallbackFactory = $consumerCallbackFactory;
-        $this->MessageSerializer = $messageSerializer;
+        $this->messageSerializer = $messageSerializer;
         $this->logger = $logger;
     }
 
@@ -40,7 +40,7 @@ class ChannelFactory
     {
         return new Channel(
             $this->consumerCallbackFactory,
-            $this->MessageSerializer,
+            $this->messageSerializer,
             $this->logger,
             $channel,
             $params->getExchange(),

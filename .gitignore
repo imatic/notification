@@ -1,3 +1,4 @@
 /vendor/
 /composer
 /.php-cs-fixer.cache
+/.idea

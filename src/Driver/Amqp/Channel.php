@@ -34,7 +34,7 @@ class Channel implements Publisher, Consumer
     /**
      * @var MessageSerializer
      */
-    private $MessageSerializer;
+    private $messageSerializer;
 
     /**
      * @var LoggerInterface
@@ -60,7 +60,7 @@ class Channel implements Publisher, Consumer
         $options = []
     ) {
         $this->consumerCallbackFactory = $consumerCallbackFactory;
-        $this->MessageSerializer = $messageSerializer;
+        $this->messageSerializer = $messageSerializer;
         $this->logger = $logger;
         $this->channel = $channel;
         $this->exchangeName = $exchangeName;
@@ -108,7 +108,7 @@ class Channel implements Publisher, Consumer
 
     public function publish(Message $message, $key = '')
     {
-        $msg = new AMQPMessage($this->MessageSerializer->serialize($message->all()), [
+        $msg = new AMQPMessage($this->messageSerializer->serialize($message->all()), [
             'delivery_mode' => 2,
         ]);
 
