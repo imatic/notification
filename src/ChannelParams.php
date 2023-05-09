@@ -8,23 +8,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ChannelParams
 {
-    private $exchange;
+    private readonly array $options;
 
-    private $options;
-
-    /**
-     * @param string $exchangeName
-     * @param array $options
-     * [
-     *     'timeout' => int, // Number of seconds for which if messages won't come, `cleanUp` is called. `init` is then called before first callback consuming message.
-     *     'init' => callable, // Called before first callback consumes message.
-     *     'cleanUp' => callable, // Called after last callback consumes message.
-     * ]
-     */
-    public function __construct($exchangeName, $options = [])
+    public function __construct(private readonly string $exchange, array $options = [])
     {
-        $this->exchange = $exchangeName;
-
         $this->options = (new OptionsResolver())
             ->setDefaults([
                 'timeout' => 0,
@@ -39,12 +26,12 @@ class ChannelParams
             ->resolve($options);
     }
 
-    public function getExchange()
+    public function getExchange(): string
     {
         return $this->exchange;
     }
 
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }

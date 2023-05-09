@@ -8,15 +8,15 @@ use Imatic\Notification\MessageSerializer;
  */
 class ConsumerCallbackFactory
 {
-    private $MessageSerializer;
+    private $messageSerializer;
 
     public function __construct(MessageSerializer $messageSerializer)
     {
-        $this->MessageSerializer = $messageSerializer;
+        $this->messageSerializer = $messageSerializer;
     }
 
     public function create(callable $callback)
     {
-        return new ConsumerCallback($callback, $this->MessageSerializer);
+        return new ConsumerCallback($callback, $this->messageSerializer);
     }
 }
